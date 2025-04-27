@@ -1,32 +1,40 @@
 <?php
-require_once 'dbh.inc.php';
-require_once 'config_session.inc.php';
+// login.inc.php
+session_start();
 
-if (isset($_POST['submit'])) {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+require_once __DIR__ . '/dbh.inc.php';  // sets up $pdo
 
-    if (empty($email) || empty($password)) {
-        $_SESSION['login_error'] = "Please fill in all fields.";
-        header("Location: ../login.php");
-        exit();
-    }
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        header("Location: /Time Management/main-page/main.php?login=success");
-        exit();
-    } else {
-        $_SESSION['login_error'] = "Invalid email or password.";
-        header("Location: ../login.php");
-        exit();
-    }
-} else {
-    header("Location: ../login.php");
-    exit();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../login.php');
+    exit;
 }
+
+$email    = trim($_POST['email']    ?? '');
+$password =           $_POST['password'] ?? '';
+
+// 1) Basic validation
+if ($email === '' || $password === '') {
+    $_SESSION['login_error'] = 'Please fill in all fields.';
+    header('Location: ../login.php');
+    exit;
+}
+
+// 2) Fetch user by email
+$stmt = $pdo->prepare('SELECT id, password FROM users WHERE email = ?');
+$stmt->execute([$email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user || !password_verify($password, $user['password'])) {
+    $_SESSION['login_error'] = 'Invalid email or password.';
+    header('Location: ../login.php');
+    exit;
+}
+
+// 3) Success — store user ID in session
+$_SESSION['user_id']    = (int)$user['id'];
+// you can also store email or username if you like:
+// $_SESSION['user_email'] = $email;
+
+// 4) Redirect into your app
+header('Location: ../main-page/main.php?login=success');
+exit;
