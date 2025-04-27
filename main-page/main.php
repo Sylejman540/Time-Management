@@ -368,8 +368,8 @@
             <p class="text-center md:text-start text-gray-600">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Et, esse?</p>
             <article class="flex justify-center md:justify-start">
                <img src="images/insta.jpg" alt="Social Media(Instagram)" class="rounded-xl w-12 h-12">
-               <img src="images/facebook.jpg" alt="Social Media(Facebook)" class="rounded-xl w-8 h-8 mt-2">
-               <img src="images/x.jpg" alt="Social Media(Facebook)" class="rounded-xl w-8 h-8 mt-2">
+               <img src="images/facebook.jpg" alt="Social Media(Facebook)" class="rounded-xl w-7 h-7 mt-2.5">
+               <img src="images/x.jpg" alt="Social Media(Facebook)" class="rounded-xl w-7 h-7 mt-2.5">
             </article>
         </div>
             <article class="grid"> 
