@@ -16,9 +16,18 @@ $name   = '';
         
 // CREATE
 if (isset($_POST['save'])) {
+    // escape the incoming name
     $name = $mysqli->real_escape_string($_POST['name']);
-    $mysqli->query("INSERT INTO data (name) VALUES ('$name')")
-        or die($mysqli->error);
+
+    // get the logged-in user’s ID
+    $uid  = (int) $_SESSION['user_id'];
+
+    // insert both name and user_id so it’s tied to that account
+    $mysqli->query("
+        INSERT INTO data (name, user_id)
+        VALUES ('$name', '$uid')
+    ") or die($mysqli->error);
+
     $_SESSION['message'] = "Record has been saved!";
     header('Location: manage.php');
     exit;
