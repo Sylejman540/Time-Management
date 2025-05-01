@@ -1,20 +1,22 @@
 <?php
-$host       = 'localhost';
-$dbname     = 'myfirstdatabase';
-$dbusername = 'root';
-$dbpassword = '';
-
-$dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+// db.php
+// Adjust these to match your MySQL credentials
+$host   = 'localhost';
+$dbname = 'myfirstdatabase';
+$user   = 'root';
+$pass   = '';
+$dsn    = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
 
 try {
-    $pdo = new PDO($dsn, $dbusername, $dbpassword, [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // throw exceptions
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // nice default fetch
-        PDO::ATTR_EMULATE_PREPARES   => false,                  // real prepared stmts
-    ]);
-
-    echo '✅ Database connection successful.';
+    $pdo = new PDO(
+        $dsn,
+        $user,
+        $pass,
+        [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
 } catch (PDOException $e) {
-    // Never echo raw errors in production—log them instead
-    echo '❌ Connection failed: ' . $e->getMessage();
+    exit('Database error: ' . $e->getMessage());
 }
