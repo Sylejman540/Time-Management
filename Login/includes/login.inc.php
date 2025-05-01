@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $email    = trim($_POST['email']    ?? '');
-$password =           $_POST['password'] ?? '';
+$password = $_POST['password'] ?? '';
 
 // 1) Basic validation
 if ($email === '' || $password === '') {
