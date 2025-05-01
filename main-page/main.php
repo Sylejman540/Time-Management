@@ -1,3 +1,41 @@
+<?php
+require __DIR__ . '/vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  header('Location: main.php');
+  exit;
+}
+
+$first = trim($_POST['name']  ?? '');
+$last  = trim($_POST['surname']     ?? '');
+$email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+
+if (!$first || !$last || !$email) {
+  echo "Please fill out all fields correctly.";
+  exit;
+}
+
+$mail = new PHPMailer(true);
+try {
+  // 1) SMTP setup
+  $mail->isSMTP();
+  $mail->Host       = 'smtp.gmail.com';
+  $mail->SMTPAuth   = true;
+  $mail->Username   = 'durgutisylejman00@gmail.com';         // your Gmail
+  $mail->Password   = 'huph lcpu swpb lyyq';     // the 16-char App Password
+  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+  $mail->Port       = 587;
+
+  // 2) Message headers & body
+  $mail->setFrom($email, "$first $last");
+  $mail->addAddress('durgutisylejman00@gmail.com');          // where you want it sent
+  $mail->Subject = "New contact from $first $last";
+  $mail->Body    = "First Name: $first\n"
+                  . "Surname:    $last\n"
+                  . "Email:      $email\n";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -350,13 +388,19 @@
         <article> 
             <img src="images/contact(1).jpg" alt="Contact Us" class="rounded-xl w-140 md:h-120 h-100" id="changeImage">
         </article>
-        <article class="flex flex-col justify-center md:mr-20">
+        <?php   // 3) Send!
+            $mail->send();
+            } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+        ?>
+        <form class="flex flex-col justify-center md:mr-20" action="" method="post">
             <h1 class="text-4xl font-bold text-center mb-10 md:mt-0 mt-5">Contact <span class="text-[#ffe270ff]">Us</span></h1>
-            <input type="text" id="text" name="text" class="mt-2 p-2 mb-5 border border-gray-300 rounded-lg md:w-80 w-95 focus:outline-none focus:ring-2 focus:ring-[#5869FF]" placeholder="Enter your name">
-            <input type="text" id="text" name="text" class="mt-2 p-2 mb-5 border border-gray-300 rounded-lg md:w-80 w-95 focus:outline-none focus:ring-2 focus:ring-[#5869FF]" placeholder="Enter your surname">
+            <input type="text" id="text" name="name" class="mt-2 p-2 mb-5 border border-gray-300 rounded-lg md:w-80 w-95 focus:outline-none focus:ring-2 focus:ring-[#5869FF]" placeholder="Enter your name">
+            <input type="text" id="text" name="surname" class="mt-2 p-2 mb-5 border border-gray-300 rounded-lg md:w-80 w-95 focus:outline-none focus:ring-2 focus:ring-[#5869FF]" placeholder="Enter your message">
             <input type="email" id="email" name="email" class="mt-2 p-2 mb-5 border border-gray-300 rounded-lg md:w-80 w-95 focus:outline-none focus:ring-2 focus:ring-[#5869FF]" placeholder="Enter your email">
             <button class="bg-[#ffe270ff] w-65 text-black font-bold md:ml-8 ml-17 p-2 rounded-lg mb-5 hover:bg-[#fee685ff]">Submit</button>
-        </article>
+        </form>
     </section>
 
 
