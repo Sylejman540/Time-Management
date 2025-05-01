@@ -57,6 +57,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         echo "Error: " . $e->getMessage();
         die();
     }
+
+    
 } else {
     header("Location: ../index.php?error=invalidrequest");
     exit();
